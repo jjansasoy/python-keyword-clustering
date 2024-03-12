@@ -1,0 +1,39 @@
+import nltk
+from nltk.cluster import KMeansClusterer
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+# List of sample keywords that you need to manually enter
+keywords = [
+    "python programming language",
+    "machine learning algorithms",
+    "data analysis tools",
+    "web development frameworks",
+    "natural language processing techniques",
+    "deep learning models",
+    "computer vision applications",
+]
+
+# Tokenize and vectorize the keywords
+vectorizer = TfidfVectorizer()
+X = vectorizer.fit_transform(keywords)
+
+# Perform clustering using KMeans
+# In this part, you have to enter the number of clusters you want
+
+num_clusters = 3  # Manually adjust the number of clusters as needed
+kmeans_clusterer = KMeansClusterer(num_clusters, distance=nltk.cluster.util.cosine_distance, repeats=25)
+assigned_clusters = kmeans_clusterer.cluster(X.toarray(), assign_clusters=True)
+
+# Group keywords by cluster
+clusters = {}
+for i, cluster_id in enumerate(assigned_clusters):
+    if cluster_id not in clusters:
+        clusters[cluster_id] = []
+    clusters[cluster_id].append(keywords[i])
+
+# Print clusters
+for cluster_id, cluster_keywords in clusters.items():
+    print(f"Cluster {cluster_id + 1}:")
+    for keyword in cluster_keywords:
+        print(f" - {keyword}")
+    print()
